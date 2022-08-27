@@ -34,25 +34,55 @@
                                             <th>Isi Laporan</th>
                                             <th>Tanggal Melapor</th>
                                             <th>Status</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $data = $koneksi->query("SELECT * FROM tb_laporan ORDER BY id_laporan DESC LEFT JOIN tb_user ON tb_laporan.id_user = tb_user.id_user");
-                                        while($d = mysqli_fetch_assoc($data)):
+                                        $data = $koneksi->query("SELECT *, DATE(tb_laporan.created_at) as tgl FROM tb_laporan LEFT JOIN tb_user ON tb_laporan.id_user = tb_user.id_user ORDER BY id_laporan DESC ");
+                                        while ($d = mysqli_fetch_assoc($data)) :
                                         ?>
-                                        <tr class="align-middle">
-                                            <td><?= $d['username'] ?></td>
-                                            <td><?= $d['judul_laporan'] ?></td>
-                                            <td class="text-center">
-                                                <a href="" class="btn btn-outline-dark btn-sm">Lihat</a>
-                                            </td>
-                                            <td class="text-center"><?= $d['created_at'] ?></td>
-                                            <td>Menunggu Konfirmasi</td>
-                                        </tr>
+                                            <tr class="align-middle">
+                                                <td><?= $d['username'] ?></td>
+                                                <td><?= $d['judul_laporan'] ?></td>
+                                                <td class="text-center">
+                                                    <a href="../uploads/<?= $d['file'] ?>" target="_blank" class="btn btn-primary btn-sm">Lihat</a>
+                                                </td>
+                                                <td class="text-center"><?= $d['tgl'] ?></td>
+                                                <?php if ($d['status'] == 0) : ?>
+                                                    <td><span class="badge bg-warning">Menunggu Konfirmasi</span>
+                                                    <?php elseif ($d['status'] == 1) : ?>
+                                                    <td><span class="badge bg-info">Terkonfirmasi</span>
+                                                    <?php else: ?>
+                                                    <td><span class="badge bg-success">Telah di atasi</span>
+                                                    <?php endif ?>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a href="index.php?page=laporan&idk=<?= $d['id_laporan'] ?>" type="submit" name="konfirmasi" class="btn btn-warning btn-sm me-2">Konfirmasi</a>
+                                                        <a href="index.php?page=laporan&id=<?= $d['id_laporan'] ?>" type="submit" name="selesai" class="btn btn-success btn-sm">Selesai</a>
+                                                    </td>
+                                            </tr>
                                         <?php endwhile ?>
                                     </tbody>
                                 </table>
+                                <?php
+                                if (isset($_GET['idk'])) {
+                                    try {
+                                        $koneksi->query("UPDATE tb_laporan SET updated_at = NOW(), status = 1 WHERE id_laporan = '$_GET[idk]'");
+                                        echo "<script>window.location.href='index.php?page=laporan'</script>";
+                                    } catch (\Throwable $th) {
+                                        echo "<script>alert('Server tidak merespon');window.location.href='index.php?page=laporan'</script>";
+                                    }
+                                }
+                                if (isset($_GET['id'])) {
+                                    try {
+                                        $koneksi->query("UPDATE tb_laporan SET updated_at = NOW(), status = 2 WHERE id_laporan = '$_GET[id]'");
+                                        echo "<script>window.location.href='index.php?page=laporan'</script>";
+                                    } catch (\Throwable $th) {
+                                        echo "<script>alert('Server tidak merespon');window.location.href='index.php?page=laporan'</script>";
+                                    }
+                                }
+                                ?>
                             </div>
                         </div>
                     </div>

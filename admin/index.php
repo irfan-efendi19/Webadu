@@ -1,5 +1,10 @@
 <?php
-include '../config/koneksi.php';
+include '../config/connection.php';
+session_start();
+if (empty($_SESSION['id_admin'])) {
+    echo "<script>window.location.href = './login.php'</script>";
+}
+$aku = mysqli_fetch_assoc($koneksi->query("SELECT * FROM tb_admin WHERE id_admin = '$_SESSION[id_admin]'"))
 ?>
 <!doctype html>
 <html lang="en">
@@ -60,133 +65,20 @@ include '../config/koneksi.php';
 
                 <div class="d-flex">
                     <div class="dropdown d-inline-block">
-                        <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="mdi mdi-bell-outline text-white"></i>
-                            <span class="badge bg-warning rounded-pill">3</span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown">
-                            <div class="p-3">
-                                <div class="row align-items-center">
-                                    <div class="col">
-                                        <h5 class="m-0 font-size-16"> Notifications (258) </h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div data-simplebar style="max-height: 230px;">
-                                <a href="#" class="text-reset notification-item">
-                                    <div class="d-flex">
-                                        <div class="flex-shrink-0 me-3">
-                                            <div class="avatar-xs">
-                                                <span class="avatar-title bg-success rounded-circle font-size-16">
-                                                    <i class="mdi mdi-cart-outline"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-1">Your order is placed</h6>
-                                            <div class="font-size-12 text-muted">
-                                                <p class="mb-1">Dummy text of the printing and typesetting industry.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-
-                                <a href="#" class="text-reset notification-item">
-                                    <div class="d-flex">
-                                        <div class="flex-shrink-0 me-3">
-                                            <div class="avatar-xs">
-                                                <span class="avatar-title bg-warning rounded-circle font-size-16">
-                                                    <i class="mdi mdi-message-text-outline"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-1">New Message received</h6>
-                                            <div class="font-size-12 text-muted">
-                                                <p class="mb-1">You have 87 unread messages</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-
-                                <a href="#" class="text-reset notification-item">
-                                    <div class="d-flex">
-                                        <div class="flex-shrink-0 me-3">
-                                            <div class="avatar-xs">
-                                                <span class="avatar-title bg-info rounded-circle font-size-16">
-                                                    <i class="mdi mdi-glass-cocktail"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-1">Your item is shipped</h6>
-                                            <div class="font-size-12 text-muted">
-                                                <p class="mb-1">It is a long established fact that a reader will</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-
-                                <a href="#" class="text-reset notification-item">
-                                    <div class="d-flex">
-                                        <div class="flex-shrink-0 me-3">
-                                            <div class="avatar-xs">
-                                                <span class="avatar-title bg-primary rounded-circle font-size-16">
-                                                    <i class="mdi mdi-cart-outline"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-1">Your order is placed</h6>
-                                            <div class="font-size-12 text-muted">
-                                                <p class="mb-1">Dummy text of the printing and typesetting industry.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-
-                                <a href="#" class="text-reset notification-item">
-                                    <div class="d-flex">
-                                        <div class="flex-shrink-0 me-3">
-                                            <div class="avatar-xs">
-                                                <span class="avatar-title bg-danger rounded-circle font-size-16">
-                                                    <i class="mdi mdi-message-text-outline"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-1">New Message received</h6>
-                                            <div class="font-size-12 text-muted">
-                                                <p class="mb-1">You have 87 unread messages</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="p-2 border-top">
-                                <div class="d-grid">
-                                    <a class="btn btn-sm btn-link font-size-14 text-center" href="javascript:void(0)">
-                                        View all
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="dropdown d-inline-block">
                         <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="rounded-circle avatar-sm" src="assets/images/users/user-4.jpg" alt="Header Avatar" style="border: 3px solid white;">
+                            <img class="rounded-circle avatar-sm" src="../uploads/<?= $aku['thumbnail'] == null ? 'default.jpg' : $aku['thumbnail']?>" alt="Header Avatar" style="border: 3px solid white;">
                         </button>
-                        <span class="text-white d-none d-lg-inline-block">Muhammad Umar Mansyur</span>
+                        <span class="text-white d-none d-lg-inline-block"><?= $aku['username']?></span>
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
-                            <a class="dropdown-item" href="#"><i class="mdi mdi-account-circle font-size-17 align-middle me-1"></i> Profile</a>
-                            <a class="dropdown-item text-danger" href="#"><i class="bx bx-power-off font-size-17 align-middle me-1 text-danger"></i> Logout</a>
+                            <a class="dropdown-item" href="index.php?page=profile"><i class="mdi mdi-account-circle font-size-17 align-middle me-1"></i> Profile</a>
+                            <a class="dropdown-item text-danger" href="../logout.php"><i class="bx bx-power-off font-size-17 align-middle me-1 text-danger"></i> Logout</a>
                         </div>
                     </div>
                     <div class="dropdown d-inline-block me-lg-5">
-                        <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a href="../logout.php" class="btn header-item noti-icon waves-effect mt-2">
                             <i class="mdi mdi-power text-white"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -204,7 +96,7 @@ include '../config/koneksi.php';
                         <li class="menu-title">Main</li>
                         <li>
                             <a href="index.php?page=dashboard" class="waves-effect">
-                                <i class="ti-home"></i><span class="badge rounded-pill bg-primary float-end">1</span>
+                                <i class="ti-home"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
@@ -224,7 +116,7 @@ include '../config/koneksi.php';
                         <li class="menu-title">Akun</li>
                         <li>
                             <a href="index.php?page=profile" class="waves-effect">
-                                <i class="ti-user"></i><span class="badge rounded-pill bg-primary float-end">1</span>
+                                <i class="ti-user"></i>
                                 <span>Profile</span>
                             </a>
                         </li>
@@ -282,6 +174,7 @@ include '../config/koneksi.php';
     <!-- JAVASCRIPT -->
     <script src="assets/libs/jquery/jquery.min.js"></script>
     <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="assets/libs/metismenu/metisMenu.min.js"></script>
     <script src="assets/libs/simplebar/simplebar.min.js"></script>
     <script src="assets/libs/node-waves/waves.min.js"></script>
@@ -303,8 +196,7 @@ include '../config/koneksi.php';
     <script src="assets/libs/raphael/raphael.min.js"></script>
     <!-- morris init js -->
     <script src="assets/js/pages/morris.init.js"></script>
-
-
+    <script src="assets/js/chart.js"></script>
 </body>
 
 </html>

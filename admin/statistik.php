@@ -25,41 +25,29 @@
                                 <th>Banyak Melapor</th>
                             </tr>
                         </thead>
+                        <tbody>
+                            <?php
+                            $getResource = $koneksi->query("SELECT MONTH(created_at) as bulan, COUNT(id_laporan) as banyak FROM tb_laporan GROUP BY MONTH(created_at) ORDER BY MONTH(created_at) ASC;");
+                            $i = 1;
+                            while ($data = mysqli_fetch_assoc($getResource)) :
+
+                            ?>
+                                <tr>
+                                    <td><?= $i ?></td>
+                                    <?php $bulan = ['Januari', 'Pebruari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'Nopember', 'Desember'] ?>
+                                    <td><?= $bulan[$data['bulan'] - 1] ?></td>
+                                    <td><?= $data['banyak'] ?></td>
+                                </tr>
+                            <?php $i++;
+                            endwhile ?>
+                        </tbody>
                     </table>
                 </div>
             </div>
             <div class="col-xl-8">
                 <div class="card">
                     <div class="card-body">
-
-                        <h4 class="card-title mb-4">Line Chart</h4>
-
-                        <div class="row justify-content-center">
-                            <div class="col-sm-4">
-                                <div class="text-center">
-                                    <h5 class="mb-0 font-size-20">25610</h5>
-                                    <p class="text-muted">Activated</p>
-                                </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-sm-4">
-                                <div class="text-center">
-                                    <h5 class="mb-0 font-size-20">56210</h5>
-                                    <p class="text-muted">Pending</p>
-                                </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-sm-4">
-                                <div class="text-center">
-                                    <h5 class="mb-0 font-size-20">12485</h5>
-                                    <p class="text-muted">Deactivated</p>
-                                </div>
-                            </div>
-                            <!-- end col -->
-                        </div>
-                        <!-- end row -->
-                        <div id="morris-line-example" class="morris-charts morris-chart-height" dir="ltr"></div>
-
+                        <canvas id="myChart"></canvas>
                     </div>
                 </div>
             </div>
