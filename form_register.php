@@ -56,6 +56,7 @@ include "./config/connection.php";
                         <label for="inputPassword4" class="form-label">Buat Password</label>
                         <input type="password" class="form-control" name="password" placeholder="Buat password baru">
                      </div>
+                     <p>Sudah mempunyai akun? <span><a href="sign-in.php">Masuk</a></span> </p>
                   </div>
                   <div class="col-lg-6 py-5 p-lg-6">
                      <h1>2. Lengkapi Identitas Anda</h1>
